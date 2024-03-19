@@ -5,25 +5,24 @@ import { Link } from 'react-router-dom';
 import { FiTrash2 } from 'react-icons/fi';
 import { IoMdClose } from 'react-icons/io';
 
-import { CartContext } from '../contexts/CartContext';
 import { useAppDispatch, useAppSelector } from '../hooks/rtk';
+import { clearCart } from '../state/cartSlice';
 import {
-  clearCart,
   selectCartItems,
+  selectCartTotalPrice,
   selectItemAmount,
-} from '../state/cartSlice';
+} from '../state/selectors';
 import CartItem from './CartItem';
-
 interface SidebarProps {
   isSidebarOpen: boolean;
   setIsSidebarOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const Sidebar = ({ isSidebarOpen, setIsSidebarOpen }: SidebarProps) => {
-  const { total } = useContext(CartContext);
   const dispatch = useAppDispatch();
   const cartItems = useAppSelector(selectCartItems);
   const itemAmount = useAppSelector(selectItemAmount);
+  const totalPrice = useAppSelector(selectCartTotalPrice);
 
   return (
     <div
@@ -50,7 +49,7 @@ const Sidebar = ({ isSidebarOpen, setIsSidebarOpen }: SidebarProps) => {
       <div className="flex flex-col gap-y-3  mt-4">
         <div className="flex w-full justify-between items-center">
           <div className="font-semibold">
-            <span className="mr-2">Subtotal:</span> $ {total.toFixed(2)}
+            <span className="mr-2">Subtotal: {totalPrice}</span>
           </div>
           <div
             onClick={() => dispatch(clearCart())}

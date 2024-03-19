@@ -5,16 +5,12 @@ import App from './App.js';
 import CartProvider from './contexts/CartContext.js';
 import ProductProvider from './contexts/ProductContext.js';
 import './index.css';
-import { store } from './store.js';
+import { store } from './state/store.ts';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <Provider store={store}>
-      <CartProvider>
-        <ProductProvider>
-          <App />
-        </ProductProvider>
-      </CartProvider>
+      <App />
     </Provider>
   </React.StrictMode>
 );
