@@ -15,8 +15,8 @@ const App = () => {
       <Router>
         <Header setIsSidebarOpen={setIsSidebarOpen} />
         <Routes>
-          <Route path="/" element={<Home />}></Route>
-          <Route path="/product/:id" element={<ProductDetails />}></Route>
+          <Route path="/" element={<Home />} />
+          <Route path="/product/:id" element={<ProductDetails />} />
         </Routes>
         <Sidebar
           isSidebarOpen={isSidebarOpen}

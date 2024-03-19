@@ -1,6 +1,5 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { CartItem } from '../types/CartItem';
-import { RootState } from '../store';
 import { Product } from '../types/Product';
 
 interface CartState {
@@ -19,30 +18,59 @@ export const cartSlice = createSlice({
       const cartItem = state.items.find((item) => {
         return item.id === action.payload.id;
       });
-
       if (cartItem) {
         state.items = state.items.map((item) =>
           item.id === action.payload.id
-            ? { ...item, amount: cartItem.amount + 1 }
+            ? {
+                ...item,
+                amount: cartItem.amount + 1,
+                totalPrice: (cartItem.totalPrice += action.payload.price),
+              }
             : item
         );
       } else {
-        const newItem = { ...action.payload, amount: 1 };
+        const newItem = {
+          ...action.payload,
+          amount: 1,
+          totalPrice: action.payload.price,
+        };
         state.items.push(newItem);
       }
     },
     clearCart: (state) => {
       state.items = [];
     },
+    removeFromCart: (state, action) => {
+      const id = action.payload;
+      const cartItem = state.items.find((item) => {
+        return item.id === id;
+      });
+      if (!cartItem) return;
+      const filteredItems = state.items.filter((item) => item.id !== id);
+      state.items = filteredItems;
+    },
+    decreaseAmount: (state, action) => {
+      const id = action.payload;
+      const cartItem = state.items.find((item) => {
+        return item.id === id;
+      });
+      if (!cartItem) return;
+
+      if (cartItem.amount <= 1) {
+        removeFromCart(id);
+        return;
+      }
+
+      const newCart = state.items.map((item) => {
+        return item.id === id ? { ...item, amount: cartItem.amount - 1 } : item;
+      });
+
+      state.items = newCart;
+    },
   },
 });
 
-export const { addToCart, clearCart } = cartSlice.actions;
-
-export const selectCartItems = (state: RootState) => state.cart.items;
-export const selectItemAmount = (state: RootState) =>
-  state.cart.items.reduce((accumulator, currentItem) => {
-    return accumulator + currentItem.amount;
-  }, 0);
+export const { addToCart, clearCart, removeFromCart, decreaseAmount } =
+  cartSlice.actions;
 
 export default cartSlice.reducer;
