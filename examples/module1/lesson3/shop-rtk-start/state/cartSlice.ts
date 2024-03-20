@@ -24,7 +24,9 @@ export const cartSlice = createSlice({
             ? {
                 ...item,
                 amount: cartItem.amount + 1,
-                totalPrice: (cartItem.totalPrice += action.payload.price),
+                totalPrice: parseFloat(
+                  (cartItem.totalPrice += cartItem.price).toFixed(2)
+                ),
               }
             : item
         );
@@ -62,7 +64,15 @@ export const cartSlice = createSlice({
       }
 
       const newCart = state.items.map((item) => {
-        return item.id === id ? { ...item, amount: cartItem.amount - 1 } : item;
+        return item.id === id
+          ? {
+              ...item,
+              amount: cartItem.amount - 1,
+              totalPrice: parseFloat(
+                (cartItem.totalPrice - cartItem.price).toFixed(2)
+              ),
+            }
+          : item;
       });
 
       state.items = newCart;
